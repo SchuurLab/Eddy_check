@@ -10,7 +10,7 @@ shinyServer(function(input, output) {
   data1 <- reactive({
     isolate({ 
     setwd("./Data/EP_summary")
-    #setwd("~/Documents/Post Doc/Schuur/R Apps/Eddy/EP_Summary_APP/Data/EP_summary")
+    #setwd("~/Documents/Post Doc/Schuur/github/Eddy_check/Data/EP_summary")
     # import all files in directory
     filenames <- list.files() 
     #filenames <- list.files(path="~/Documents/Post Doc/Schuur/R Apps/Eddy/Data") 
@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
     })
     dat[, timestamp := paste(date, time, sep=" ")]
     dat[, timestamp := ymd_hms(timestamp)]
-    dat[, Date := as.Date(date)]
+    dat[, Date := as.Date(timestamp)]
     #dat <- as.data.frame(dat)
   })
 
@@ -74,7 +74,7 @@ shinyServer(function(input, output) {
     
     c <- subset(data1(), Date >= input$daterange[[1]] & Date <= input$daterange[[2]])
     ggplot(c, aes(timestamp, sonic_temperature - 273.15))+geom_point( aes(colour="Sonic"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, air_temperature - 273.15, colour="Air"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, air_t_mean - 273.15, colour="Air"),size=5, alpha=0.5)+
       geom_point(aes(timestamp, TA_1_1_1 - 273.15, colour="Vaisala"),size=5, alpha=0.5)+theme_bw()
     #})
   })
@@ -83,7 +83,8 @@ shinyServer(function(input, output) {
   output$plot_pressure <-  renderPlot({
     
     c <- subset(data1(), Date >= input$daterange[[1]] & Date <= input$daterange[[2]])
-    ggplot(c, aes(timestamp, air_pressure))+geom_point(size=5, alpha=0.5)+theme_bw()
+    ggplot(c, aes(timestamp, air_pressure))+geom_point(size=5, alpha=0.5, aes(colour = "Sonic"))+
+      geom_point(aes(timestamp, air_p_mean, colour="LI-7700"),size=5, alpha=0.5)+theme_bw()
     #})
   })
 
@@ -158,20 +159,20 @@ shinyServer(function(input, output) {
   output$plot_soil_temp1 <-  renderPlot({
     
     c <- subset(data1(), Date >= input$daterange[[1]] & Date <= input$daterange[[2]])
-    ggplot(c, aes(timestamp, TS_1_1_1))+geom_point( aes(colour="TS_1_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_2_1_1, colour="TS_2_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_3_1_1, colour="TS_3_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_4_1_1, colour="TS_4_1_1"),size=5, alpha=0.5)+theme_bw()
+    ggplot(c, aes(timestamp, TS_1_1_1 - 273.15))+geom_point( aes(colour="TS_1_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_2_1_1 - 273.15, colour="TS_2_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_3_1_1 - 273.15, colour="TS_3_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_4_1_1 - 273.15, colour="TS_4_1_1"),size=5, alpha=0.5)+theme_bw()
     #})
   })
   # Soil Temperatures 2 graph
   output$plot_soil_temp2 <-  renderPlot({
     
     c <- subset(data1(), Date >= input$daterange[[1]] & Date <= input$daterange[[2]])
-    ggplot(c, aes(timestamp, TS_5_1_1))+geom_point( aes(colour="TS_5_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_6_1_1, colour="TS_6_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_7_1_1, colour="TS_7_1_1"),size=5, alpha=0.5)+
-      geom_point(aes(timestamp, TS_8_1_1, colour="TS_8_1_1"),size=5, alpha=0.5)+theme_bw()
+    ggplot(c, aes(timestamp, TS_5_1_1 - 273.15))+geom_point( aes(colour="TS_5_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_6_1_1 - 273.15, colour="TS_6_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_7_1_1 - 273.15, colour="TS_7_1_1"),size=5, alpha=0.5)+
+      geom_point(aes(timestamp, TS_8_1_1 - 273.15, colour="TS_8_1_1"),size=5, alpha=0.5)+theme_bw()
     #})
   })
   
